@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y perl --no-install-recommends && rm -rf 
 RUN apt-get update && apt-get install -y libaio1 pwgen && rm -rf /var/lib/apt/lists/*
 
 ENV MYSQL_MAJOR 5.5
-ENV MYSQL_VERSION 5.5.59
+ENV MYSQL_VERSION 5.5.58
 
 RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& wget "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" -O mysql.tar.gz \
@@ -71,7 +71,17 @@ RUN mkdir -p /var/lib/mysql /var/run/mysqld \
 VOLUME /var/lib/mysql
 
 COPY docker-entrypoint.sh /usr/local/bin/
+
+# Install cryptdb libraries
+COPY cryptdb_libs/edb.so /usr/local/mysql/lib/plugin/
+COPY cryptdb_libs/libcrypto.so /usr/lib/x86_64-linux-gnu/
+COPY cryptdb_libs/libcrypto.so.1.0.0 /usr/lib/x86_64-linux-gnu/
+COPY cryptdb_libs/libntl.so /usr/lib/libntl.so
+COPY cryptdb_libs/libntl.so.0 /usr/lib/libntl.so.0
+COPY cryptdb_libs/libgmp.so.10 /usr/lib/x86_64-linux-gnu/libgmp.so.10
+
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 3306
