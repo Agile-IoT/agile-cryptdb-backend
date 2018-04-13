@@ -28,7 +28,7 @@ http://docs.docker.com/v1.8/installation/
     agile-cryptdb-backend:
       container_name: agile-cryptdb-backend
       hostname: agile-cryptdb-backend
-      image: agile-cryptdb-backend
+      image: agileiot/agile-cryptdb-backend-$AGILE_ARCH:v0.0.1
       restart: always
       ports:
         - 3306:3306/tcp
